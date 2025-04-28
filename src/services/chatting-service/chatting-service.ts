@@ -13,6 +13,29 @@ export class ChattingService {
 
   startSession() {
     this.log.info('session start');
-    this.log.info(this.ws);
+    this.ws.on('message', (data) => this.handleMessage(data));
+    this.ws.on('error', (err) => this.handleError(err));
+    this.ws.on('close', () => this.handleClose());
+  }
+
+  private async handleMessage(data: WebSocket.Data) {
+    try {
+      if (Buffer.isBuffer(data)) {
+        this.log.debug(`Received Buffer(${data.length} Bytes)`);
+      } else {
+        this.log.warn(`Unexpected data type: ${typeof data}`);
+      }
+    } catch (err) {
+      this.log.error(err);
+      this.ws.close(1011, 'Internal error');
+    }
+  }
+
+  private handleError(err: Error) {
+    this.log.error(err);
+  }
+
+  private handleClose() {
+    this.log.info('session close');
   }
 }
