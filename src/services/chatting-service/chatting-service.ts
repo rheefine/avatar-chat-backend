@@ -1,14 +1,19 @@
+import { AudioPipeline } from '#@/services/chatting-service/audio-pipeline/audio-pipeline';
+
 import type { FastifyBaseLogger } from 'fastify';
 import type { WebSocket } from 'ws';
 
 export class ChattingService {
   private log: FastifyBaseLogger;
 
+  private audioPipeline: AudioPipeline;
+
   constructor(
     private readonly ws: WebSocket,
     parentLogger: FastifyBaseLogger,
   ) {
     this.log = parentLogger.child({ service: 'chatting' });
+    this.audioPipeline = new AudioPipeline(this.log);
   }
 
   startSession() {
@@ -21,7 +26,7 @@ export class ChattingService {
   private async handleMessage(data: WebSocket.Data) {
     try {
       if (Buffer.isBuffer(data)) {
-        this.log.debug(`Received Buffer(${data.length} Bytes)`);
+        await this.audioPipeline.handleAudioBuffer(data);
       } else {
         this.log.warn(`Unexpected data type: ${typeof data}`);
       }
