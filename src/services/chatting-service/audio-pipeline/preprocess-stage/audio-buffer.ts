@@ -1,9 +1,6 @@
 import { FastifyBaseLogger } from 'fastify';
-
-const DEFAULT_SAMPLE_RATE = 16000;
-const BYTES_PER_SAMPLE = 2;
-const DEFAULT_BUFFER_SECONDS = 0.6;
-const DEFAULT_TAIL_SECONDS = 0.01;
+import { AUDIO } from '#@/constants/audio';
+import { CHATTING_LOG_MESSAGES } from '#@/constants/log-message';
 
 export class AudioBuffer {
   private log: FastifyBaseLogger;
@@ -16,7 +13,7 @@ export class AudioBuffer {
     this.log = parentLogger;
     this.buffers = [];
     this.tail = Buffer.from([]);
-    this.log.trace('AudioBuffer initialized');
+    this.log.trace(CHATTING_LOG_MESSAGES.AUDIO_BUFFER.INITIALIZED);
   }
 
   append(buffer: Buffer): void {
@@ -28,7 +25,7 @@ export class AudioBuffer {
   }
 
   isFull(): boolean {
-    const threshold = DEFAULT_SAMPLE_RATE * BYTES_PER_SAMPLE * DEFAULT_BUFFER_SECONDS;
+    const threshold = AUDIO.SAMPLE_RATE * AUDIO.BYTES_PER_SAMPLE * AUDIO.BUFFER_SECONDS;
 
     return this.size() >= threshold;
   }
@@ -36,7 +33,7 @@ export class AudioBuffer {
   generateAudioChunk(): Buffer {
     const audioChunk = Buffer.concat([this.tail, Buffer.concat(this.buffers)]);
 
-    const targetTailSize = DEFAULT_SAMPLE_RATE * BYTES_PER_SAMPLE * DEFAULT_TAIL_SECONDS;
+    const targetTailSize = AUDIO.SAMPLE_RATE * AUDIO.BYTES_PER_SAMPLE * AUDIO.TAIL_SECONDS;
     if (targetTailSize > 0) {
       const start = Math.max(0, audioChunk.length - targetTailSize);
       this.tail = audioChunk.slice(start);

@@ -1,5 +1,6 @@
 import fastifyWebsocket from '@fastify/websocket';
 import { ChattingService } from '#@/services/chatting-service/chatting-service';
+import { WS_STATUS } from '#@/constants/ws-status';
 
 import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import type { WebSocket } from 'ws';
@@ -13,7 +14,7 @@ const plugin: FastifyPluginAsync = async (fastify) => {
       chattingService.startSession();
     } catch (err) {
       fastify.log.error(err);
-      socket.close(1011, 'initialization error');
+      socket.close(WS_STATUS.INTERNAL.CODE, WS_STATUS.INTERNAL.MESSAGE);
     }
   });
 };
