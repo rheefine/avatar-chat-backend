@@ -27,6 +27,9 @@ export default async function serviceApp(fastify: FastifyInstance, opts: Fastify
 
   await fastify.register(fastifyAutoload, {
     dir: path.join(import.meta.dirname, 'routes'),
+    dirNameRoutePrefix: (parent, name) => {
+      return name === 'http' || name === 'ws' ? false : name;
+    },
     autoHooks: true,
     cascadeHooks: true,
     options: { ...opts },
