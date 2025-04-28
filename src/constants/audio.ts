@@ -1,0 +1,6 @@
+export const AUDIO = {
+  SAMPLE_RATE: 16000,
+  BYTES_PER_SAMPLE: 2,
+  BUFFER_SECONDS: 0.6,
+  TAIL_SECONDS: 0.01,
+} as const;
