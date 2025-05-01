@@ -1,12 +1,12 @@
 import EventEmitter from 'events';
-import { AudioBuffer } from '#@/services/chatting-service/audio-pipeline/preprocess-stage/audio-buffer';
+import { AudioBuffer } from '#@/services/chatting/speech-pipeline/audio-preprocess/audio-buffer';
 import { CHATTING_LOG_CONTEXT } from '#@/constants/log-context';
 import { STAGE_EVENT } from '#@/constants/event';
 
 import type { FastifyBaseLogger } from 'fastify';
-import type { PipelineStage } from '#@/services/chatting-service/audio-pipeline/pipeline-stage.type';
+import type { Stage } from '#@/services/chatting/speech-pipeline/stage.type';
 
-export class PreprocessStage extends EventEmitter implements PipelineStage<Buffer, Buffer> {
+export class AudioPreprocessStage extends EventEmitter implements Stage<Buffer, Buffer> {
   private log: FastifyBaseLogger;
 
   private buffer: AudioBuffer;
