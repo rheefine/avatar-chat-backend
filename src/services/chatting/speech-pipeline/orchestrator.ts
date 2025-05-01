@@ -5,6 +5,7 @@ import { STAGE_EVENT } from '#@/constants/event';
 import { CHATTING_LOG_MESSAGES } from '#@/constants/log-message';
 
 import type { FastifyBaseLogger } from 'fastify';
+import type { SttAdapter } from '#@/adapters/stt/stt.adapter.type';
 
 export class Orchestrator {
   private log: FastifyBaseLogger;
@@ -30,10 +31,15 @@ export class Orchestrator {
     errLog.error(err.message);
   };
 
-  constructor(parentLogger: FastifyBaseLogger) {
+  constructor(
+    parentLogger: FastifyBaseLogger,
+    ports: {
+      sttPort: SttAdapter;
+    },
+  ) {
     this.log = parentLogger.child({ pipeline: CHATTING_LOG_CONTEXT.AUDIO_PIPELINE });
     this.preprocessStage = new AudioPreprocessStage(this.log);
-    this.speechToTextStage = new SpeechToTextStage(this.log);
+    this.speechToTextStage = new SpeechToTextStage(this.log, ports.sttPort);
 
     this.preprocessStage.on(STAGE_EVENT.DATA, this.onAudioReady);
     this.speechToTextStage.on(STAGE_EVENT.DATA, this.onSttTranscribed);
@@ -53,7 +59,7 @@ export class Orchestrator {
     await this.speechToTextStage.stop();
     this.preprocessStage.off(STAGE_EVENT.DATA, this.onAudioReady);
     this.speechToTextStage.off(STAGE_EVENT.DATA, this.onSttTranscribed);
-    this.speechToTextStage.off(STAGE_EVENT.DETECTED, () => this.onSoundDetected);
+    this.speechToTextStage.off(STAGE_EVENT.DETECTED, this.onSoundDetected);
     this.speechToTextStage.off(STAGE_EVENT.ERROR, this.onStageError);
   }
 }

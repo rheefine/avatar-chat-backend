@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import { AzureSttRecognizer } from '#@/adapters/stt/azure/azure-stt-recognizer';
 import { STT_EVENT } from '#@/constants/event';
+import { ADAPTER_LOG_CONTEXT } from '#@/constants/log-context';
 
 import type { FastifyBaseLogger } from 'fastify';
 import type { AzureSttOptions } from '#@/adapters/stt/azure/azure-stt-options.type';
@@ -13,7 +14,7 @@ export class AzureSttAdapter extends EventEmitter implements SttAdapter {
 
   constructor(parentLogger: FastifyBaseLogger, opts: AzureSttOptions) {
     super();
-    this.log = parentLogger;
+    this.log = parentLogger.child({ adapter: ADAPTER_LOG_CONTEXT.STT.AZURE });
     this.recognizer = new AzureSttRecognizer(this.log, opts);
 
     this.recognizer.on(STT_EVENT.TRANSCRIPTION, (res: Transcription) =>
