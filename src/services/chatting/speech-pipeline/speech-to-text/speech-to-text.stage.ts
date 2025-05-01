@@ -3,10 +3,10 @@ import { AzureSttAdapter } from '#@/adapters/stt/azure/azure-stt.adapter';
 import { STAGE_EVENT, STT_EVENT } from '#@/constants/event';
 
 import type { FastifyBaseLogger } from 'fastify';
-import type { PipelineStage } from '#@/services/chatting-service/audio-pipeline/pipeline-stage.type';
+import type { Stage } from '#@/services/chatting/speech-pipeline/stage.type';
 import type { Transcription, SttAdapter } from '#@/adapters/stt/stt.adapter.type';
 
-export class SpeechToTextStage extends EventEmitter implements PipelineStage<Buffer, string> {
+export class SpeechToTextStage extends EventEmitter implements Stage<Buffer, string> {
   private log: FastifyBaseLogger;
 
   private sttAdapter: SttAdapter;

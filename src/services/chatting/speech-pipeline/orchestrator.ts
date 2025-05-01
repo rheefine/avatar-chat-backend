@@ -1,15 +1,15 @@
-import { PreprocessStage } from '#@/services/chatting-service/audio-pipeline/preprocess-stage/preprocess-stage';
-import { SpeechToTextStage } from '#@/services/chatting-service/audio-pipeline/speech-to-text/speech-to-text.stage';
+import { AudioPreprocessStage } from '#@/services/chatting/speech-pipeline/audio-preprocess/audio-preprocess.stage';
+import { SpeechToTextStage } from '#@/services/chatting/speech-pipeline/speech-to-text/speech-to-text.stage';
 import { CHATTING_LOG_CONTEXT } from '#@/constants/log-context';
 import { STAGE_EVENT } from '#@/constants/event';
 import { CHATTING_LOG_MESSAGES } from '#@/constants/log-message';
 
 import type { FastifyBaseLogger } from 'fastify';
 
-export class AudioPipeline {
+export class Orchestrator {
   private log: FastifyBaseLogger;
 
-  private preprocessStage: PreprocessStage;
+  private preprocessStage: AudioPreprocessStage;
 
   private speechToTextStage: SpeechToTextStage;
 
@@ -32,7 +32,7 @@ export class AudioPipeline {
 
   constructor(parentLogger: FastifyBaseLogger) {
     this.log = parentLogger.child({ pipeline: CHATTING_LOG_CONTEXT.AUDIO_PIPELINE });
-    this.preprocessStage = new PreprocessStage(this.log);
+    this.preprocessStage = new AudioPreprocessStage(this.log);
     this.speechToTextStage = new SpeechToTextStage(this.log);
 
     this.preprocessStage.on(STAGE_EVENT.DATA, this.onAudioReady);

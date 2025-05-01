@@ -1,4 +1,4 @@
-import { AudioPipeline } from '#@/services/chatting-service/audio-pipeline/audio-pipeline';
+import { Orchestrator } from '#@/services/chatting/speech-pipeline/orchestrator';
 import { CHATTING_LOG_CONTEXT } from '#@/constants/log-context';
 import { CHATTING_LOG_MESSAGES } from '#@/constants/log-message';
 import { WS_STATUS } from '#@/constants/ws-status';
@@ -10,14 +10,14 @@ import type { WebSocket } from 'ws';
 export class ChattingService {
   private log: FastifyBaseLogger;
 
-  private audioPipeline: AudioPipeline;
+  private audioPipeline: Orchestrator;
 
   constructor(
     private readonly socket: WebSocket,
     parentLogger: FastifyBaseLogger,
   ) {
     this.log = parentLogger.child({ service: CHATTING_LOG_CONTEXT.SERVICE });
-    this.audioPipeline = new AudioPipeline(this.log);
+    this.audioPipeline = new Orchestrator(this.log);
   }
 
   async startSession() {

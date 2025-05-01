@@ -3,7 +3,7 @@ import { STAGE_EVENT } from '#@/constants/event';
 
 import type { FastifyBaseLogger } from 'fastify';
 
-export interface PipelineStage<I, O> extends EventEmitter {
+export interface Stage<I, O> extends EventEmitter {
   process(input: I): Promise<void>;
 
   on(event: typeof STAGE_EVENT.DATA, listener: (output: O) => void): this;
