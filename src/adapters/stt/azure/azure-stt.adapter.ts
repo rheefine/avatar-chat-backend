@@ -12,6 +12,18 @@ export class AzureSttAdapter extends EventEmitter implements SttAdapter {
 
   private recognizer: AzureSttRecognizer;
 
+  private handleTranscription = (res: Transcription): void => {
+    this.emit(STT_EVENT.TRANSCRIPTION, res);
+  };
+
+  private handleSpeechStarted = (): void => {
+    this.emit(STT_EVENT.SPEECH_STARTED);
+  };
+
+  private handleError = (err: Error): void => {
+    this.emit(STT_EVENT.ERROR, err);
+  };
+
   constructor(parentLogger: FastifyBaseLogger, opts: AzureSttOptions) {
     super();
     this.log = parentLogger.child({ adapter: ADAPTER_LOG_CONTEXT.STT.AZURE });
@@ -34,5 +46,8 @@ export class AzureSttAdapter extends EventEmitter implements SttAdapter {
 
   async stopContinuousRecognition(): Promise<void> {
     await this.recognizer.stopRecognition();
+    this.recognizer.off(STT_EVENT.TRANSCRIPTION, this.handleTranscription);
+    this.recognizer.off(STT_EVENT.SPEECH_STARTED, this.handleSpeechStarted);
+    this.recognizer.off(STT_EVENT.ERROR, this.handleError);
   }
 }
