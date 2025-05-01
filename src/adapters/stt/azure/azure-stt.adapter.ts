@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { AzureSttRecognizer } from '#@/adapters/stt/azure/azure-stt-recognizer';
+import { STT_EVENT } from '#@/constants/event';
 
 import type { FastifyBaseLogger } from 'fastify';
 import type { AzureSttOptions } from '#@/adapters/stt/azure/azure-stt-options.type';
@@ -15,9 +16,11 @@ export class AzureSttAdapter extends EventEmitter implements SttAdapter {
     this.log = parentLogger;
     this.recognizer = new AzureSttRecognizer(this.log, opts);
 
-    this.recognizer.on('transcription', (res: Transcription) => this.emit('transcription', res));
-    this.recognizer.on('speechStarted', () => this.emit('speechStarted'));
-    this.recognizer.on('error', (err: Error) => this.emit('error', err));
+    this.recognizer.on(STT_EVENT.TRANSCRIPTION, (res: Transcription) =>
+      this.emit(STT_EVENT.TRANSCRIPTION, res),
+    );
+    this.recognizer.on(STT_EVENT.SPEECH_STARTED, () => this.emit(STT_EVENT.SPEECH_STARTED));
+    this.recognizer.on(STT_EVENT.ERROR, (err: Error) => this.emit(STT_EVENT.ERROR, err));
   }
 
   async processAudioChunk(buffer: Buffer): Promise<void> {

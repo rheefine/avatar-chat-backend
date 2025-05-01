@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { STT_EVENT } from '#@/constants/event';
 
 export interface Transcription {
   text: string;
@@ -12,9 +13,9 @@ export interface SttAdapter extends EventEmitter {
 
   stopContinuousRecognition(): Promise<void>;
 
-  on(event: 'transcription', listener: (res: Transcription) => void): this;
+  on(event: typeof STT_EVENT.TRANSCRIPTION, listener: (res: Transcription) => void): this;
 
-  on(event: 'speechStarted', listener: () => void): this;
+  on(event: typeof STT_EVENT.SPEECH_STARTED, listener: () => void): this;
 
-  on(event: 'error', listener: (err: Error) => void): this;
+  on(event: typeof STT_EVENT.ERROR, listener: (err: Error) => void): this;
 }

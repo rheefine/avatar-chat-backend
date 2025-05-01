@@ -1,9 +1,10 @@
 import { EventEmitter } from 'events';
 import { AzureSttAdapter } from '#@/adapters/stt/azure/azure-stt.adapter';
+import { STAGE_EVENT, STT_EVENT } from '#@/constants/event';
 
 import type { FastifyBaseLogger } from 'fastify';
 import type { PipelineStage } from '#@/services/chatting-service/audio-pipeline/pipeline-stage.type';
-import type { SttAdapter } from '#@/adapters/stt/stt.adapter.type';
+import type { Transcription, SttAdapter } from '#@/adapters/stt/stt.adapter.type';
 
 export class SpeechToTextStage extends EventEmitter implements PipelineStage<Buffer, string> {
   private log: FastifyBaseLogger;
@@ -19,14 +20,14 @@ export class SpeechToTextStage extends EventEmitter implements PipelineStage<Buf
       language: 'ko-kr',
     });
 
-    this.sttAdapter.on('transcription', ({ text }) => {
-      this.emit('data', text);
+    this.sttAdapter.on(STT_EVENT.TRANSCRIPTION, (transcription: Transcription) => {
+      this.emit(STAGE_EVENT.DATA, transcription.text);
     });
-    this.sttAdapter.on('error', (err) => {
-      this.emit('error', err, this.log);
+    this.sttAdapter.on(STT_EVENT.SPEECH_STARTED, () => {
+      this.emit(STAGE_EVENT.DETECTED);
     });
-    this.sttAdapter.on('speechStarted', () => {
-      this.emit('detected');
+    this.sttAdapter.on(STT_EVENT.ERROR, (err) => {
+      this.emit(STAGE_EVENT.ERROR, err, this.log);
     });
   }
 
