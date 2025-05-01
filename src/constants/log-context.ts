@@ -1,11 +1,12 @@
 export const CHATTING_LOG_CONTEXT = {
   SERVICE: 'chatting',
-  AUDIO_PIPELINE: 'audio',
-  PREPROCESS_STAGE: 'preprocess',
+  SPEECH_PIPELINE: 'speech',
+  PREPROCESS_STAGE: 'audio-preprocess',
+  STT_STAGE: 'stt',
 } as const;
 
 export const ADAPTER_LOG_CONTEXT = {
   STT: {
-    AZURE: 'Azure STT',
+    AZURE: 'azure-stt',
   },
 } as const;

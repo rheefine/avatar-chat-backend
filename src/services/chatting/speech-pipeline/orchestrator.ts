@@ -37,7 +37,7 @@ export class Orchestrator {
       sttPort: SttAdapter;
     },
   ) {
-    this.log = parentLogger.child({ pipeline: CHATTING_LOG_CONTEXT.AUDIO_PIPELINE });
+    this.log = parentLogger.child({ pipeline: CHATTING_LOG_CONTEXT.SPEECH_PIPELINE });
     this.preprocessStage = new AudioPreprocessStage(this.log);
     this.speechToTextStage = new SpeechToTextStage(this.log, ports.sttPort);
 

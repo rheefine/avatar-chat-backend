@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { STAGE_EVENT, STT_EVENT } from '#@/constants/event';
+import { CHATTING_LOG_CONTEXT } from '#@/constants/log-context';
 
 import type { FastifyBaseLogger } from 'fastify';
 import type { Stage } from '#@/services/chatting/speech-pipeline/stage.type';
@@ -25,7 +26,7 @@ export class SpeechToTextStage extends EventEmitter implements Stage<Buffer, str
     private readonly sttPort: SttAdapter,
   ) {
     super();
-    this.log = parentLogger.child({ stage: 'STT' });
+    this.log = parentLogger.child({ stage: CHATTING_LOG_CONTEXT.STT_STAGE });
 
     this.sttPort.on(STT_EVENT.TRANSCRIPTION, this.handleTranscription);
     this.sttPort.on(STT_EVENT.SPEECH_STARTED, this.handleSpeechStarted);
