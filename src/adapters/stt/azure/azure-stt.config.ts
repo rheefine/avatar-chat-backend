@@ -6,6 +6,10 @@ export class AzureSttConfig {
   static create(opts: AzureSttOptions): sdk.SpeechConfig {
     const speechConfig = sdk.SpeechConfig.fromSubscription(opts.subscriptionKey, opts.region);
     speechConfig.speechRecognitionLanguage = opts.language;
+    speechConfig.setProperty(
+      sdk.PropertyId.SpeechServiceConnection_EndSilenceTimeoutMs,
+      String(opts.endSilenceTimeoutMs),
+    );
 
     return speechConfig;
   }

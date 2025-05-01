@@ -18,6 +18,7 @@ export class SpeechToTextStage extends EventEmitter implements PipelineStage<Buf
       subscriptionKey: String(process.env.AZURE_SPEECH_KEY),
       region: 'koreacentral',
       language: 'ko-kr',
+      endSilenceTimeoutMs: 1500,
     });
 
     this.sttAdapter.on(STT_EVENT.TRANSCRIPTION, (transcription: Transcription) => {
