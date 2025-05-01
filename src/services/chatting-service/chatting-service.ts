@@ -20,7 +20,8 @@ export class ChattingService {
     this.audioPipeline = new AudioPipeline(this.log);
   }
 
-  startSession() {
+  async startSession() {
+    await this.audioPipeline.start();
     this.log.info(CHATTING_LOG_MESSAGES.SESSION.START);
     this.socket.on(WEBSOCKET_EVENT.MESSAGE, (data) => this.handleMessage(data));
     this.socket.on(WEBSOCKET_EVENT.ERROR, (err) => this.handleError(err));
@@ -40,11 +41,13 @@ export class ChattingService {
     }
   }
 
-  private handleError(err: Error) {
+  private async handleError(err: Error) {
+    await this.audioPipeline.stop();
     this.log.error(err);
   }
 
-  private handleClose() {
+  private async handleClose() {
+    await this.audioPipeline.stop();
     this.log.info(CHATTING_LOG_MESSAGES.SESSION.CLOSE);
   }
 }

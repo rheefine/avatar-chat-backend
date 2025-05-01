@@ -13,7 +13,7 @@ export class AudioBuffer {
     this.log = parentLogger;
     this.buffers = [];
     this.tail = Buffer.from([]);
-    this.log.trace(CHATTING_LOG_MESSAGES.AUDIO_BUFFER.INITIALIZED);
+    this.log.trace(CHATTING_LOG_MESSAGES.PREPROCESS.BUFFER_CLASS_INITIALIZED);
   }
 
   append(buffer: Buffer): void {
