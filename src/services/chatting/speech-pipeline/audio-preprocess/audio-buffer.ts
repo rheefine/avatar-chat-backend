@@ -1,19 +1,16 @@
 import { FastifyBaseLogger } from 'fastify';
 import { AUDIO } from '#@/constants/audio';
-import { CHATTING_LOG_MESSAGES } from '#@/constants/log-message';
 
 export class AudioBuffer {
   private log: FastifyBaseLogger;
 
-  private buffers: Buffer[];
+  private buffers: Buffer[] = [];
 
-  private tail: Buffer;
+  private tail: Buffer = Buffer.from([]);
 
   constructor(parentLogger: FastifyBaseLogger) {
     this.log = parentLogger;
-    this.buffers = [];
-    this.tail = Buffer.from([]);
-    this.log.trace(CHATTING_LOG_MESSAGES.PREPROCESS.BUFFER_CLASS_INITIALIZED);
+    this.log.silent('');
   }
 
   append(buffer: Buffer): void {

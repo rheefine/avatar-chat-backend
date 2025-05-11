@@ -38,7 +38,8 @@ export class AzureSttRecognizer extends EventEmitter {
     };
     this.recognizer.canceled = async (_s, e) => {
       await this.cleanup();
-      this.emit(STT_EVENT.ERROR, new Error(e.errorDetails));
+      this.log.error(e, 'Recognizer Canceled');
+      this.emit(STT_EVENT.ERROR);
     };
 
     this.recognizer.sessionStarted = () => {
@@ -54,7 +55,7 @@ export class AzureSttRecognizer extends EventEmitter {
       this.pushStream.write(new Uint8Array(buffer).buffer);
     } catch (err) {
       this.log.error(STT_ADAPTER_LOG_MESSAGES.ERROR.WRITE, err);
-      this.emit(STT_EVENT.SPEECH_STARTED, err as Error);
+      this.emit(STT_EVENT.ERROR);
     }
   }
 
@@ -64,8 +65,8 @@ export class AzureSttRecognizer extends EventEmitter {
         this.recognizer.startContinuousRecognitionAsync(res, rej);
       });
     } catch (err) {
-      this.log.warn(STT_ADAPTER_LOG_MESSAGES.ERROR.SESSION_START, err);
-      this.emit(STT_EVENT.SPEECH_STARTED, err as Error);
+      this.log.error(STT_ADAPTER_LOG_MESSAGES.ERROR.SESSION_START, err);
+      this.emit(STT_EVENT.ERROR);
     }
   }
 

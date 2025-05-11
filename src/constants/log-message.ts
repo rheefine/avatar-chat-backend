@@ -5,10 +5,9 @@ export const CHATTING_LOG_MESSAGES = {
   },
   PREPROCESS: {
     CHUNK_READY: (bytes: number) => `✔ Preprocessed audio chunk ready (${bytes} Bytes)`,
-    BUFFER_CLASS_INITIALIZED: '* AudioBuffer Class initialized',
   },
   STT: {
-    TRANSCRIPTION: (text: string) => `${text}`,
+    TRANSCRIPTION: (text: string) => `[USER]: ${text}`,
     DETECTED: '* Speech Detected',
   },
   ERROR: {

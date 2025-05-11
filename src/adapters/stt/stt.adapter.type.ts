@@ -17,5 +17,5 @@ export interface SttAdapter extends EventEmitter {
 
   on(event: typeof STT_EVENT.SPEECH_STARTED, listener: () => void): this;
 
-  on(event: typeof STT_EVENT.ERROR, listener: (err: Error) => void): this;
+  on(event: typeof STT_EVENT.ERROR, listener: () => void): this;
 }

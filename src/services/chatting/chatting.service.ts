@@ -21,29 +21,51 @@ export class ChattingService {
   };
 
   private handleError = async (err: Error) => {
-    await this.orchestrator.stop();
     this.log.error(err);
+    await this.handleClose();
   };
 
   private handleClose = async () => {
     await this.orchestrator.stop();
-    this.log.info(CHATTING_LOG_MESSAGES.SESSION.CLOSE);
+    this.orchestrator.off('audio', this.sendAudio);
+    this.orchestrator.off('message', this.sendMessage);
+    this.orchestrator.off('error', this.sendError);
     this.socket.off(WEBSOCKET_EVENT.MESSAGE, this.handleMessage);
     this.socket.off(WEBSOCKET_EVENT.ERROR, this.handleError);
     this.socket.off(WEBSOCKET_EVENT.CLOSE, this.handleClose);
+    this.log.info(CHATTING_LOG_MESSAGES.SESSION.CLOSE);
+  };
+
+  private sendAudio = async (data: WebSocket.Data) => {
+    this.socket.send(data);
+  };
+
+  private sendMessage = async (data: WebSocket.Data) => {
+    this.socket.send(data, { binary: false });
+  };
+
+  private sendError = async (data: WebSocket.Data) => {
+    this.socket.send(data, { binary: false });
+    this.socket.close(WS_STATUS.INTERNAL.CODE, WS_STATUS.INTERNAL.MESSAGE);
   };
 
   constructor(
     private readonly log: FastifyBaseLogger,
+    private readonly sessionID: string,
     private readonly socket: WebSocket,
     private readonly orchestrator: Orchestrator,
-  ) {}
+  ) {
+    this.socket.send(JSON.stringify({ type: 'session_id', id: this.sessionID }), { binary: false });
+  }
 
   async startSession() {
+    this.orchestrator.on('audio', this.sendAudio);
+    this.orchestrator.on('message', this.sendMessage);
+    this.orchestrator.on('error', this.sendError);
     await this.orchestrator.start();
     this.log.info(CHATTING_LOG_MESSAGES.SESSION.START);
-    this.socket.on(WEBSOCKET_EVENT.MESSAGE, (data) => this.handleMessage(data));
-    this.socket.on(WEBSOCKET_EVENT.ERROR, (err) => this.handleError(err));
-    this.socket.on(WEBSOCKET_EVENT.CLOSE, () => this.handleClose());
+    this.socket.on(WEBSOCKET_EVENT.MESSAGE, this.handleMessage);
+    this.socket.on(WEBSOCKET_EVENT.ERROR, this.handleError);
+    this.socket.on(WEBSOCKET_EVENT.CLOSE, this.handleClose);
   }
 }
