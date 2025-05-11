@@ -20,8 +20,8 @@ export class AzureSttAdapter extends EventEmitter implements SttAdapter {
     this.emit(STT_EVENT.SPEECH_STARTED);
   };
 
-  private handleError = (err: Error): void => {
-    this.emit(STT_EVENT.ERROR, err);
+  private handleError = (): void => {
+    this.emit(STT_EVENT.ERROR);
   };
 
   constructor(parentLogger: FastifyBaseLogger, opts: AzureSttOptions) {
@@ -29,11 +29,9 @@ export class AzureSttAdapter extends EventEmitter implements SttAdapter {
     this.log = parentLogger.child({ adapter: ADAPTER_LOG_CONTEXT.STT.AZURE });
     this.recognizer = new AzureSttRecognizer(this.log, opts);
 
-    this.recognizer.on(STT_EVENT.TRANSCRIPTION, (res: Transcription) =>
-      this.emit(STT_EVENT.TRANSCRIPTION, res),
-    );
-    this.recognizer.on(STT_EVENT.SPEECH_STARTED, () => this.emit(STT_EVENT.SPEECH_STARTED));
-    this.recognizer.on(STT_EVENT.ERROR, (err: Error) => this.emit(STT_EVENT.ERROR, err));
+    this.recognizer.on(STT_EVENT.TRANSCRIPTION, this.handleTranscription);
+    this.recognizer.on(STT_EVENT.SPEECH_STARTED, this.handleSpeechStarted);
+    this.recognizer.on(STT_EVENT.ERROR, this.handleError);
   }
 
   async processAudioChunk(buffer: Buffer): Promise<void> {

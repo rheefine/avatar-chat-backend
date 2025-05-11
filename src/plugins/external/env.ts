@@ -8,6 +8,12 @@ declare module 'fastify' {
       RATE_LIMIT_MAX: number;
       AZURE_SPEECH_KEY: string;
       AZURE_SPEECH_REGION: string;
+      AZURE_OPENAI_KEY: string;
+      AZURE_OPENAI_LLM_ENDPOINT: string;
+      AZURE_OPENAI_EMBEDDING_ENDPOINT: string;
+      AWS_POLLY_KEY: string;
+      AWS_POLLY_SECRET: string;
+      AWS_POLLY_REGION: string;
     };
   }
 }
@@ -22,6 +28,24 @@ const schema = {
     AZURE_SPEECH_REGION: {
       type: 'string',
       default: 'koreacentral',
+    },
+    AZURE_OPENAI_KEY: {
+      type: 'string',
+    },
+    AZURE_OPENAI_LLM_ENDPOINT: {
+      type: 'string',
+    },
+    AZURE_OPENAI_EMBEDDING_ENDPOINT: {
+      type: 'string',
+    },
+    AWS_POLLY_KEY: {
+      type: 'string',
+    },
+    AWS_POLLY_SECRET: {
+      type: 'string',
+    },
+    AWS_POLLY_REGION: {
+      type: 'string',
     },
     RATE_LIMIT_MAX: {
       type: 'number',

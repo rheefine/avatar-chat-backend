@@ -5,6 +5,8 @@ import { STAGE_EVENT } from '#@/constants/event';
 
 import type { FastifyBaseLogger } from 'fastify';
 import type { Stage } from '#@/services/chatting/speech-pipeline/stage.type';
+import type { AudioFromClient } from '#@/schemas/ws/index';
+import type { AudioChunk } from '#@/services/chatting/speech-pipeline/stage.dto';
 
 export class AudioPreprocessStage extends EventEmitter implements Stage<Buffer, Buffer> {
   private log: FastifyBaseLogger;
@@ -17,11 +19,11 @@ export class AudioPreprocessStage extends EventEmitter implements Stage<Buffer, 
     this.buffer = new AudioBuffer(this.log);
   }
 
-  async process(buffer: Buffer) {
+  async process(buffer: AudioFromClient) {
     this.buffer.append(buffer);
 
     if (this.buffer.isFull()) {
-      const chunk = this.buffer.generateAudioChunk();
+      const chunk: AudioChunk = this.buffer.generateAudioChunk();
       this.emit(STAGE_EVENT.DATA, chunk);
     }
   }
